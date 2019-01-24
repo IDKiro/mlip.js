@@ -1,4 +1,6 @@
-# sid.js
+# mlip.js
+
+Machine Learning Image Process
 
 ## Project setup
 ```
