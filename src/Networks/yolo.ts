@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 import * as tf from '@tensorflow/tfjs'
 
-const yoloProcess = (image) => {
+const yoloProcess = (image: ImageData) => {
   let inputTensor = tf.fromPixels(image)
   
 }

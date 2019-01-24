@@ -90,8 +90,8 @@
       openFile () {
         let fileObj = this.$refs.openObjectFile.files
         let file = fileObj[0]
-        openimage(file).then((thumbUrl) => {
-          this.thumbsrc = thumbUrl
+        openimage(file).then((imgUrl) => {
+          this.thumbsrc = imgUrl
         })
       },
 
