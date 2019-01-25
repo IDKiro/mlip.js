@@ -1,23 +1,5 @@
 # mlip.js
 
-Machine Learning Image Process
+It is the abbreviation of Machine Learning Image Process in TensorFlow.js.
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
-### Compiles and minifies for production
-```
-yarn run build
-```
-
-### Lints and fixes files
-```
-yarn run lint
-```
+The project is still under development!
