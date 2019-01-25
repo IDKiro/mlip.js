@@ -1,4 +1,4 @@
-const openimage = function (file: File) {
+const openimage = (file: File) => {
   let reader = new FileReader()
   if (file) {
     reader.readAsDataURL(file)

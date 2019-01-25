@@ -27,6 +27,12 @@
         </v-list-tile>
         <Object />
       </v-list-group>
+      <v-list-group prepend-icon="face">
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Face Recognition</v-list-tile-title>
+        </v-list-tile>
+        <Face />
+      </v-list-group>
       <v-list-group prepend-icon="icon-raw">
         <v-list-tile slot="activator">
           <v-list-tile-title>See in the dark</v-list-tile-title>
@@ -39,11 +45,13 @@
 
 <script>
   import Object from '../components/Object'
+  import Face from '../components/Face'
   import Sid from '../components/Sid'
 
   export default {
     components: {
       Object,
+      Face,
       Sid
     },
     data () {

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Setting from './Layouts/Setting'
+import Setting from './layouts/Setting'
 
 export default {
   name: 'App',

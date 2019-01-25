@@ -20,7 +20,7 @@
       <input
         id="openfile"
         name="file"
-        ref="openObjectFile"
+        ref="openFaceFile"
         type="file" 
         accept="image/*"
         v-show="false"
@@ -70,7 +70,7 @@
 
 <script>
   import { openimage } from '../utils/image'
-  import { objDet } from '../nets/object'
+  import { faceRec } from '../nets/face'
 
   export default {
     data () {
@@ -88,28 +88,26 @@
 
     methods: {
       openFile () {
-        let fileObj = this.$refs.openObjectFile.files
+        let fileObj = this.$refs.openFaceFile.files
         let file = fileObj[0]
         openimage(file).then((imgUrl) => {
           this.thumbsrc = imgUrl
         })
       },
 
-      async processImage () {
+      processImage () {
         let inImage = new Image()
         if (this.thumbsrc) {
           inImage.src = this.thumbsrc
-          var boxes = await objDet(inImage)
+          faceRec(inImage)
         } else {
           throw new Error('image not loaded')
         }
-        // eslint-disable-next-line
-        console.log(boxes)
       },
 
       closeThumb () {
         this.thumbsrc = undefined
-        this.$refs.openObjectFile.value = ''
+        this.$refs.openFaceFile.value = ''
       },
 
       onDragover () {
@@ -120,7 +118,7 @@
 
       onDrop (event) {
         this.dragover = false
-        this.$refs.openObjectFile.files = event.dataTransfer.files
+        this.$refs.openFaceFile.files = event.dataTransfer.files
       }
     }
   }
