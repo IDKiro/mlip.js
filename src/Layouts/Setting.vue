@@ -13,14 +13,15 @@
               flat
               icon
               color="grey darken-1"
-              href="https://github.com/IDKiro"
+              href="https://github.com/IDKiro/mlip.js"
             >
-              <v-icon>icon-github</v-icon>
+              <v-icon color="white">
+                icon-github
+              </v-icon>
             </v-btn>
           </v-flex>
         </v-layout>
       </v-img>
-      <v-divider />
       <v-list-group prepend-icon="icon-detection">
         <v-list-tile slot="activator">
           <v-list-tile-title>Object Detection</v-list-tile-title>
@@ -67,4 +68,9 @@
 
 <style lang='scss' scoped>
   @import "../styles/global";
+
+  .lightbox {
+    box-shadow: 0 0 20px inset rgba(0, 0, 0, 0.2);
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 72px);
+  }
 </style>

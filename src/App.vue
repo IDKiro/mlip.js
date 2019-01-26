@@ -1,21 +1,26 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      permanent
-      width="333"
-    >
-      <Setting />
-    </v-navigation-drawer>
+    <v-layout row>
+      <v-navigation-drawer
+        permanent
+        width="333"
+      >
+        <Setting />
+      </v-navigation-drawer>
+      <Result />
+    </v-layout>
   </v-app>
 </template>
 
 <script>
 import Setting from './layouts/Setting'
+import Result from './layouts/Result'
 
 export default {
   name: 'App',
   components: {
-    Setting
+    Setting,
+    Result
   },
   data () {
     return {
