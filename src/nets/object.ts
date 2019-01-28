@@ -1,10 +1,10 @@
 import * as tf from '@tensorflow/tfjs'
 
 const DEFAULT_INPUT_DIM = 416
-const DEFAULT_MAX_BOXES = 2048
+const DEFAULT_MAX_BOXES = 8
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01
-const DEFAULT_IOU_THRESHOLD = 0.4
-const DEFAULT_CLASS_PROB_THRESHOLD = 0.4
+const DEFAULT_IOU_THRESHOLD = 0.5
+const DEFAULT_CLASS_PROB_THRESHOLD = 0.5
 const DEFAULT_MODEL_LOCATION = 'models/yolo/model2.json'
 const class_names = [
   'person', 'bicycle', 'car', 'motorbike', 'aeroplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
@@ -193,17 +193,20 @@ async function yolo(
 }
 
 const objDet = async (image: HTMLImageElement) => {
+  const model = await tf.loadModel(DEFAULT_MODEL_LOCATION)
+
   let canvas = document.createElement("CANVAS") as HTMLCanvasElement
   canvas.setAttribute("width", String(DEFAULT_INPUT_DIM))
   canvas.setAttribute("height", String(DEFAULT_INPUT_DIM))
   let ctx = canvas.getContext("2d")
-  let ratio = Math.max(image.height / DEFAULT_INPUT_DIM, image.width / DEFAULT_INPUT_DIM)
+  let ratio = Math.max(
+    Math.max(image.height / DEFAULT_INPUT_DIM, image.width / DEFAULT_INPUT_DIM),
+    1)
   if (ctx) {
-    ctx.scale(1 / ratio, 1 / ratio)
-    ctx.drawImage(image, 0, 0)
-    let imgData = ctx.getImageData(0, 0, DEFAULT_INPUT_DIM, DEFAULT_INPUT_DIM)
-    const model = await tf.loadModel(DEFAULT_MODEL_LOCATION)
-    let inputTensor = tf.fromPixels(imgData).expandDims(0)
+    await ctx.scale(1 / ratio, 1 / ratio)
+    await ctx.drawImage(image, 0, 0)
+    let imgData = await ctx.getImageData(0, 0, DEFAULT_INPUT_DIM, DEFAULT_INPUT_DIM)
+    let inputTensor = await tf.fromPixels(imgData).expandDims(0).toFloat().div(tf.scalar(255))
     return await yolo(inputTensor, model)
   } else {
     return new Error('error')

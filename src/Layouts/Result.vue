@@ -34,22 +34,29 @@
         const DEFAULT_INPUT_DIM = 416
         this.$refs.canvas.height = val.height
         this.$refs.canvas.width = val.width
-        this.ratio = Math.max(val.height / DEFAULT_INPUT_DIM, val.width / DEFAULT_INPUT_DIM)
+        this.ratio = Math.max(
+          Math.max(val.height / DEFAULT_INPUT_DIM, val.width / DEFAULT_INPUT_DIM),
+          1)
         let ctx = this.$refs.canvas.getContext("2d")
         ctx.drawImage(val, 0, 0)
       },
 
       boxes: function (val) {
         let ctx = this.$refs.canvas.getContext("2d")
+        ctx.scale(this.ratio, this.ratio)
         val.forEach(box => {
           const {
             top, left, bottom, right, classProb, className,
           } = box
-          ctx.beginPath()
-          ctx.rect(left * this.ratio, top * this.ratio, (right-left) * this.ratio, (bottom-top) * this.ratio)
-          ctx.stroke()
-          ctx.strokeText(`${className} ${classProb}`, left * this.ratio, top * this.ratio)
+          if (this.objImg.height / this.ratio >= bottom &
+            this.objImg.width / this.ratio >= right) {
+            ctx.beginPath()
+            ctx.rect(left, top, right-left, bottom-top)
+            ctx.stroke()
+            ctx.strokeText(`${className} ${classProb}`, left, bottom)
+          }
         })
+        ctx.scale(1 / this.ratio, 1 / this.ratio)
       }
     }
   }
