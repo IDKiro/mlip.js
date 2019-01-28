@@ -117,7 +117,7 @@
 
       async processImage () {
         let inImage = new Image()
-        if (this.imgsrc & this.selModel) {
+        if (this.imgsrc && this.selModel) {
           inImage.src = this.imgsrc
           this.$store.commit('setObjImg', inImage)
           this.$store.commit('setBoxes', await objDet(inImage, this.selModel))
