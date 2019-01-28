@@ -6,7 +6,7 @@
     <v-card-text>
       <label
         class="openArea"
-        for="openfile"
+        for="openObjectFile"
         v-if="!imgsrc"
         @drop.prevent="onDrop"
         @dragover.prevent="onDragover"
@@ -18,7 +18,7 @@
         </div>
       </label>
       <input
-        id="openfile"
+        id="openObjectFile"
         name="file"
         ref="openObjectFile"
         type="file" 
