@@ -1,5 +1,20 @@
 <template>
   <v-app>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="1000"
+      :top="true"
+      color="info"
+    >
+      {{ snacktext }}
+      <v-btn
+        color="pink"
+        flat
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
     <v-layout row>
       <v-navigation-drawer
         permanent
@@ -24,7 +39,14 @@ export default {
   },
   data () {
     return {
-      //
+      snackbar: false,
+      snacktext: 'Error'
+    }
+  },
+  methods: {
+    showSnack (val) {
+      this.snacktext = val
+      this.snackbar = true
     }
   }
 }

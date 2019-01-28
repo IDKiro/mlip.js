@@ -22,10 +22,6 @@ const YOLO_ANCHORS = tf.tensor2d([
   [7.88282, 3.52778], [9.77052, 9.16828],
 ])
 
-const downloadModel = async (url = DEFAULT_MODEL_LOCATION) => {
-  return await tf.loadModel(url)
-}
-
 const yolo_filter_boxes =  (
   boxes: tf.Tensor<tf.Rank>,
   box_confidence: tf.Tensor<tf.Rank>,
@@ -196,10 +192,22 @@ async function yolo(
   return results
 }
 
-const objDet = async (image: ImageData) => {
-  const model = await downloadModel()
-  let inputTensor = tf.fromPixels(image).expandDims(0)
-  return await yolo(inputTensor, model)
+const objDet = async (image: HTMLImageElement) => {
+  let canvas = document.createElement("CANVAS") as HTMLCanvasElement
+  canvas.setAttribute("width", String(DEFAULT_INPUT_DIM))
+  canvas.setAttribute("height", String(DEFAULT_INPUT_DIM))
+  let ctx = canvas.getContext("2d")
+  let ratio = Math.max(image.height / DEFAULT_INPUT_DIM, image.width / DEFAULT_INPUT_DIM)
+  if (ctx) {
+    ctx.scale(1 / ratio, 1 / ratio)
+    ctx.drawImage(image, 0, 0)
+    let imgData = ctx.getImageData(0, 0, DEFAULT_INPUT_DIM, DEFAULT_INPUT_DIM)
+    const model = await tf.loadModel(DEFAULT_MODEL_LOCATION)
+    let inputTensor = tf.fromPixels(imgData).expandDims(0)
+    return await yolo(inputTensor, model)
+  } else {
+    return new Error('error')
+  }
 }
 
 export { objDet } 

@@ -5,12 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-
+    objImg: undefined,
+    boxes: []
   },
   mutations: {
-
-  },
-  actions: {
-
+    setObjImg (state, val) {
+      state.objImg = val
+    },
+    
+    setBoxes (state, val) {
+      state.boxes = val
+    }
   }
 })

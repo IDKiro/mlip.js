@@ -7,7 +7,7 @@
       <label
         class="openArea"
         for="openfile"
-        v-if="!thumbsrc"
+        v-if="!imgsrc"
         @drop.prevent="onDrop"
         @dragover.prevent="onDragover"
         @dragleave.prevent="dragover = false"
@@ -28,8 +28,8 @@
       >
       <v-img
         class="imgArea" 
-        :src="thumbsrc"
-        v-if="thumbsrc"
+        :src="imgsrc"
+        v-if="imgsrc"
       >
         <v-layout
           fill-height
@@ -82,7 +82,7 @@
           apply: 'apply',
           cancel: 'cancel'
         },
-        thumbsrc: undefined
+        imgsrc: undefined
       }
     },
 
@@ -91,24 +91,23 @@
         let fileObj = this.$refs.openObjectFile.files
         let file = fileObj[0]
         openimage(file).then((imgUrl) => {
-          this.thumbsrc = imgUrl
+          this.imgsrc = imgUrl
         })
       },
 
       async processImage () {
         let inImage = new Image()
-        if (this.thumbsrc) {
-          inImage.src = this.thumbsrc
-          var boxes = await objDet(inImage)
+        if (this.imgsrc) {
+          inImage.src = this.imgsrc
+          this.$store.commit('setObjImg', inImage)
+          this.$store.commit('setBoxes', await objDet(inImage))
         } else {
           throw new Error('image not loaded')
         }
-        // eslint-disable-next-line
-        console.log(boxes)
       },
 
       closeThumb () {
-        this.thumbsrc = undefined
+        this.imgsrc = undefined
         this.$refs.openObjectFile.value = ''
       },
 
