@@ -49,6 +49,14 @@
       </v-img>
     </v-card-text>
     <v-card-text>
+      <v-select
+        :items="models"
+        label="Select model"
+        @change="loadModel"
+        :append-icon="modelLoaded ? 'done' : '$vuetify.icons.dropdown'"
+      />
+    </v-card-text>
+    <v-card-text>
       <v-layout
         row
         align-center
@@ -69,20 +77,26 @@
 </template>
 
 <script>
+  import * as tf from '@tensorflow/tfjs'
   import { openimage } from '../utils/image'
   import { objDet } from '../nets/object'
 
   export default {
     data () {
       return {
-        darkLevel: 512,
-        gammaRatio: 300,
         message: {
           open: 'Click or Drag to Open',
           apply: 'apply',
           cancel: 'cancel'
         },
-        imgsrc: undefined
+        imgsrc: undefined,
+        models: [
+          {text: 'Recommend', value: 'models/yolo/model2.json'},
+          {text: 'Model 1', value: 'models/yolo/model1.json'},
+          {text: 'Model 2', value: 'models/yolo/model.json'},
+        ],
+        modelLoaded: false,
+        selModel: undefined
       }
     },
 
@@ -95,14 +109,20 @@
         })
       },
 
+      async loadModel (evt) {
+        this.modelLoaded = false
+        this.selModel = await tf.loadModel(evt)
+        this.modelLoaded = true
+      },
+
       async processImage () {
         let inImage = new Image()
-        if (this.imgsrc) {
+        if (this.imgsrc & this.selModel) {
           inImage.src = this.imgsrc
           this.$store.commit('setObjImg', inImage)
-          this.$store.commit('setBoxes', await objDet(inImage))
+          this.$store.commit('setBoxes', await objDet(inImage, this.selModel))
         } else {
-          throw new Error('image not loaded')
+          this.$emit('showSnack', 'Error: Image or Model not loaded')
         }
       },
 

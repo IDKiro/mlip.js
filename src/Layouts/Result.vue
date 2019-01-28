@@ -43,20 +43,22 @@
 
       boxes: function (val) {
         let ctx = this.$refs.canvas.getContext("2d")
-        ctx.scale(this.ratio, this.ratio)
+        ctx.font = "20px Arial"
+        ctx.strokeStyle = "#FFFFFF"
+        ctx.fillStyle = "#FFFFFF"
         val.forEach(box => {
           const {
             top, left, bottom, right, classProb, className,
           } = box
           if (this.objImg.height / this.ratio >= bottom &
             this.objImg.width / this.ratio >= right) {
+            let prob = (Math.floor(classProb * 100) / 100).toString()
             ctx.beginPath()
-            ctx.rect(left, top, right-left, bottom-top)
+            ctx.rect(left * this.ratio, top * this.ratio, (right-left) * this.ratio, (bottom-top) * this.ratio)
             ctx.stroke()
-            ctx.strokeText(`${className} ${classProb}`, left, bottom)
+            ctx.fillText(`${className}: ${prob}`, left * this.ratio + 5, top * this.ratio + 20)
           }
         })
-        ctx.scale(1 / this.ratio, 1 / this.ratio)
       }
     }
   }

@@ -5,7 +5,6 @@ const DEFAULT_MAX_BOXES = 8
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01
 const DEFAULT_IOU_THRESHOLD = 0.5
 const DEFAULT_CLASS_PROB_THRESHOLD = 0.5
-const DEFAULT_MODEL_LOCATION = 'models/yolo/model2.json'
 const class_names = [
   'person', 'bicycle', 'car', 'motorbike', 'aeroplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
   'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
@@ -192,9 +191,7 @@ async function yolo(
   return results
 }
 
-const objDet = async (image: HTMLImageElement) => {
-  const model = await tf.loadModel(DEFAULT_MODEL_LOCATION)
-
+const objDet = async (image: HTMLImageElement, model: tf.Model) => {
   let canvas = document.createElement("CANVAS") as HTMLCanvasElement
   canvas.setAttribute("width", String(DEFAULT_INPUT_DIM))
   canvas.setAttribute("height", String(DEFAULT_INPUT_DIM))

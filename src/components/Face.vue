@@ -75,8 +75,6 @@
   export default {
     data () {
       return {
-        darkLevel: 512,
-        gammaRatio: 300,
         message: {
           open: 'Click or Drag to Open',
           apply: 'apply',

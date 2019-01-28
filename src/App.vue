@@ -2,9 +2,8 @@
   <v-app>
     <v-snackbar
       v-model="snackbar"
-      :timeout="1000"
+      :timeout="2000"
       :top="true"
-      color="info"
     >
       {{ snacktext }}
       <v-btn
@@ -20,7 +19,9 @@
         permanent
         width="333"
       >
-        <Setting />
+        <Setting
+          @showSnack="showSnack"
+        />
       </v-navigation-drawer>
       <Result />
     </v-layout>

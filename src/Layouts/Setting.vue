@@ -26,19 +26,25 @@
         <v-list-tile slot="activator">
           <v-list-tile-title>Object Detection</v-list-tile-title>
         </v-list-tile>
-        <Object />
+        <Object
+          @showSnack="showSnack"
+        />
       </v-list-group>
       <v-list-group prepend-icon="face">
         <v-list-tile slot="activator">
           <v-list-tile-title>Face Recognition</v-list-tile-title>
         </v-list-tile>
-        <Face />
+        <Face
+          @showSnack="showSnack"
+        />
       </v-list-group>
       <v-list-group prepend-icon="icon-raw">
         <v-list-tile slot="activator">
           <v-list-tile-title>See in the dark</v-list-tile-title>
         </v-list-tile>
-        <Sid />
+        <Sid
+          @showSnack="showSnack"
+        />
       </v-list-group>
     </vue-scroll>
   </v-list>
@@ -62,6 +68,9 @@
     },
 
     methods: {
+      showSnack (val) {
+        this.$emit('showSnack', val)
+      }
     }
   }
 </script>
