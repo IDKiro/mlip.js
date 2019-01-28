@@ -51,6 +51,7 @@
     <v-card-text>
       <v-select
         :items="models"
+        v-model="selModel"
         label="Select model"
         @change="loadModel"
         :append-icon="modelLoaded ? 'done' : '$vuetify.icons.dropdown'"
@@ -68,7 +69,10 @@
         >
           {{ message.apply }}
         </v-btn>
-        <v-btn color="error">
+        <v-btn
+          color="error"
+          @click="clearAll"
+        >
           {{ message.cancel }}
         </v-btn>
       </v-layout>
@@ -96,7 +100,8 @@
           {text: 'Model 2', value: 'models/yolo/model.json'},
         ],
         modelLoaded: false,
-        selModel: undefined
+        selModel: undefined,
+        loadedModel: undefined
       }
     },
 
@@ -111,19 +116,26 @@
 
       async loadModel (evt) {
         this.modelLoaded = false
-        this.selModel = await tf.loadModel(evt)
+        this.loadedModel = await tf.loadModel(evt)
         this.modelLoaded = true
       },
 
       async processImage () {
         let inImage = new Image()
-        if (this.imgsrc && this.selModel) {
+        if (this.imgsrc && this.loadedModel) {
           inImage.src = this.imgsrc
           this.$store.commit('setObjImg', inImage)
-          this.$store.commit('setBoxes', await objDet(inImage, this.selModel))
+          this.$store.commit('setBoxes', await objDet(inImage, this.loadedModel))
         } else {
           this.$emit('showSnack', 'Error: Image or Model not loaded')
         }
+      },
+
+      clearAll () {
+        this.imgsrc = undefined
+        this.modelLoaded = false
+        this.selModel = undefined
+        this.loadedModel = undefined
       },
 
       closeThumb () {
