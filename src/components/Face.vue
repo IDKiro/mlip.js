@@ -52,6 +52,15 @@
       </v-img>
     </v-card-text>
     <v-card-text>
+      <v-select
+        :items="models"
+        v-model="selModel"
+        label="Select model"
+        @change="loadModel"
+        :append-icon="modelLoaded ? 'done' : '$vuetify.icons.dropdown'"
+      />
+    </v-card-text>
+    <v-card-text>
       <v-layout
         row
         align-center
@@ -72,6 +81,7 @@
 </template>
 
 <script>
+  import { loadFrozenModel } from '@tensorflow/tfjs-converter'
   import { openimage } from '../utils/image'
   import { faceRec } from '../nets/face'
 
@@ -86,7 +96,13 @@
           {id: 'openFaceFile1', name: 'file1', message: 'Click or Drag to Open Image 1'},
           {id: 'openFaceFile2', name: 'file2', message: 'Click or Drag to Open Image 1'}
         ],
-        imgsrc: [undefined, undefined]
+        imgsrc: [undefined, undefined],
+        models: [
+          {text: 'Default', value: ['models/sid/tensorflowjs_model.pb', 'models/sid/weights_manifest.json']}
+        ],
+        modelLoaded: false,
+        selModel: undefined,
+        loadedModel: undefined
       }
     },
 
@@ -99,13 +115,19 @@
         })
       },
 
+      async loadModel (evt) {
+        this.modelLoaded = false
+        this.loadedModel = await loadFrozenModel(evt[0], evt[1])
+        this.modelLoaded = true
+      },
+
       async processImage () {
         let inImage1 = new Image()
         let inImage2 = new Image()
-        if (this.imgsrc[0] && this.imgsrc[1]) {
+        if (this.imgsrc[0] && this.imgsrc[1] && this.loadedModel) {
           inImage1.src = this.imgsrc[0]
           inImage2.src = this.imgsrc[1]
-          await faceRec(inImage1, inImage2)
+          await faceRec(inImage1, inImage2, this.loadedModel)
         } else {
           this.$emit('showSnack', 'Error: Image or Model not loaded')
         }
