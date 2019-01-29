@@ -122,7 +122,7 @@ async function yolo(
   const outs = tf.tidy(() => {
     const activation = model.predict(input) as tf.Tensor<tf.Rank>
 
-    const [box_xy, box_wh, box_confidence, box_class_probs ] =
+    const [box_xy, box_wh, box_confidence, box_class_probs] =
       yolo_head(activation, yoloAnchors, numClasses)
 
     const all_boxes = yolo_boxes_to_corners(box_xy, box_wh)

@@ -38,7 +38,7 @@
           @showSnack="showSnack"
         />
       </v-list-group>
-      <v-list-group prepend-icon="icon-raw">
+      <v-list-group prepend-icon="brightness_7">
         <v-list-tile slot="activator">
           <v-list-tile-title>See in the dark</v-list-tile-title>
         </v-list-tile>

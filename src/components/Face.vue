@@ -6,30 +6,30 @@
     <v-card-text>
       <label
         class="openArea"
-        for="openFaceFile"
-        v-if="!thumbsrc"
-        @drop.prevent="onDrop"
+        :for="inImg[0].id"
+        v-if="!imgsrc[0]"
+        @drop.prevent="onDrop(0, $event)"
         @dragover.prevent="onDragover"
         @dragleave.prevent="dragover = false"
       >
         <v-icon>photo</v-icon>
         <div class="text">
-          {{ message.open }}
+          {{ message.open[0] }}
         </div>
       </label>
       <input
-        id="openFaceFile"
-        name="file"
-        ref="openFaceFile"
+        :id="inImg[0].id"
+        :name="inImg[0].name"
+        :ref="inImg[0].id"
         type="file" 
         accept="image/*"
         v-show="false"
-        @change="openFile"
+        @change="openFile(0)"
       >
       <v-img
         class="imgArea" 
-        :src="thumbsrc"
-        v-if="thumbsrc"
+        :src="imgsrc[0]"
+        v-if="imgsrc[0]"
       >
         <v-layout
           fill-height
@@ -41,7 +41,52 @@
             icon
             small
             color="blue"
-            @click="closeThumb"
+            @click="closeThumb(0)"
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-img>
+    </v-card-text>
+    <v-card-text>
+      <label
+        class="openArea"
+        :for="inImg[1].id"
+        v-if="!imgsrc[1]"
+        @drop.prevent="onDrop(1, $event)"
+        @dragover.prevent="onDragover"
+        @dragleave.prevent="dragover = false"
+      >
+        <v-icon>photo</v-icon>
+        <div class="text">
+          {{ message.open[1] }}
+        </div>
+      </label>
+      <input
+        :id="inImg[1].id"
+        :name="inImg[1].name"
+        :ref="inImg[1].id"
+        type="file" 
+        accept="image/*"
+        v-show="false"
+        @change="openFile(1)"
+      >
+      <v-img
+        class="imgArea" 
+        :src="imgsrc[1]"
+        v-if="imgsrc[1]"
+      >
+        <v-layout
+          fill-height
+          align-start
+          justify-end
+        >
+          <v-btn
+            flat
+            icon
+            small
+            color="blue"
+            @click="closeThumb(1)"
           >
             <v-icon>close</v-icon>
           </v-btn>
@@ -76,48 +121,60 @@
     data () {
       return {
         message: {
-          open: 'Click or Drag to Open',
+          open: ['Click or Drag to Open Image 1', 'Click or Drag to Open Image 2'],
           apply: 'apply',
           cancel: 'cancel'
         },
-        thumbsrc: undefined
+        inImg: [
+          {id: 'openFaceFile1', name: 'file1'},
+          {id: 'openFaceFile2', name: 'file2'}
+        ],
+        imgsrc: [undefined, undefined]
       }
     },
 
     methods: {
-      openFile () {
-        let fileObj = this.$refs.openFaceFile.files
+      openFile (index) {
+        let fileObj = index ? this.$refs.openFaceFile2.files : this.$refs.openFaceFile1.files
         let file = fileObj[0]
         openimage(file).then((imgUrl) => {
-          this.thumbsrc = imgUrl
+          this.imgsrc.splice(index, 1, imgUrl)
         })
       },
 
-      processImage () {
-        let inImage = new Image()
-        if (this.thumbsrc) {
-          inImage.src = this.thumbsrc
-          faceRec(inImage)
+      async processImage () {
+        let inImage1 = new Image()
+        let inImage2 = new Image()
+        if (this.imgsrc[0] && this.imgsrc[1]) {
+          inImage1.src = this.imgsrc[0]
+          inImage2.src = this.imgsrc[1]
+          await faceRec(inImage1, inImage2)
         } else {
-          throw new Error('image not loaded')
+          this.$emit('showSnack', 'Error: Image or Model not loaded')
         }
       },
 
-      closeThumb () {
-        this.thumbsrc = undefined
-        this.$refs.openFaceFile.value = ''
+      closeThumb (index) {
+        this.imgsrc.splice(index, 1, undefined)
+        if (index) {
+          this.$refs.openFaceFile2.value = ''
+        } else {
+          this.$refs.openFaceFile1.value = ''
+        }
       },
 
       onDragover () {
-        if (!this.disabled) {
-          this.dragover = true
-        }
+        this.dragover = true
       },
 
-      onDrop (event) {
+      onDrop (index, event) {
         this.dragover = false
-        this.$refs.openFaceFile.files = event.dataTransfer.files
-      }
+        if (index) {
+          this.$refs.openFaceFile2.files = event.dataTransfer.files
+        } else {
+          this.$refs.openFaceFile1.files = event.dataTransfer.files
+        }
+      },
     }
   }
 </script>

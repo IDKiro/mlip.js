@@ -144,9 +144,7 @@
       },
 
       onDragover () {
-        if (!this.disabled) {
-          this.dragover = true
-        }
+        this.dragover = true
       },
 
       onDrop (event) {
