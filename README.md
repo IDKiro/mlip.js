@@ -1,5 +1,23 @@
 # mlip.js
 
-It is the abbreviation of Machine Learning Image Process in TensorFlow.js.
+The mlip.js is short for Machine Learning Image Process in TensorFlow.js.
 
-The project is still under development!
+## Object Detection
+
+### Info:
+
+- Dataset: 'COCO'
+- Networks: 'yolo v2'
+- Input: Bitmap ( jpg/png etc. ) without size limit
+
+### Result:
+
+![](docs/imgs/object_result.png)
+
+## Face Recognition
+
+
+
+## See in the dark
+
+
