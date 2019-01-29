@@ -78,12 +78,24 @@
       />
     </v-card-text>
     <v-card-text>
+      <v-select
+        :items="models"
+        v-model="selModel"
+        label="Select model"
+        @change="loadModel"
+        :append-icon="modelLoaded ? 'done' : '$vuetify.icons.dropdown'"
+      />
+    </v-card-text>
+    <v-card-text>
       <v-layout
         row
         align-center
         justify-space-around
       >
-        <v-btn color="success">
+        <v-btn
+          color="success"
+          @click="processImage"
+        >
           {{ message.apply }}
         </v-btn>
         <v-btn color="error">
@@ -95,7 +107,9 @@
 </template>
 
 <script>
+  import { loadFrozenModel } from '@tensorflow/tfjs-converter'
   import { openraw } from '../utils/raw'
+  import { sidProcess } from '../nets/sid'
 
   export default {
     data () {
@@ -109,7 +123,13 @@
           apply: 'apply',
           cancel: 'cancel'
         },
-        thumbsrc: undefined
+        thumbsrc: undefined,
+        models: [
+          {text: 'Default', value: ['models/sid/tensorflowjs_model.pb', 'models/sid/weights_manifest.json']}
+        ],
+        modelLoaded: false,
+        selModel: undefined,
+        loadedModel: undefined
       }
     },
 
@@ -122,15 +142,28 @@
         })
       },
 
+      async loadModel (evt) {
+        this.modelLoaded = false
+        this.loadedModel = await loadFrozenModel(evt[0], evt[1])
+        this.modelLoaded = true
+      },
+
+      async processImage () {
+        let rawImage = new Uint16Array()
+        if (this.thumbsrc && this.loadedModel) {
+          await sidProcess(rawImage, this.loadedModel)
+        } else {
+          this.$emit('showSnack', 'Error: Image or Model not loaded')
+        }
+      },
+
       closeThumb () {
         this.thumbsrc = undefined
         this.$refs.openRawFile.value = ''
       },
 
       onDragover () {
-        if (!this.disabled) {
-          this.dragover = true
-        }
+        this.dragover = true
       },
 
       onDrop (event) {

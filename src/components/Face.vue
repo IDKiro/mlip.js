@@ -98,7 +98,7 @@
         ],
         imgsrc: [undefined, undefined],
         models: [
-          {text: 'Default', value: ['models/sid/tensorflowjs_model.pb', 'models/sid/weights_manifest.json']}
+          {text: 'Default', value: ['models/face/tensorflowjs_model.pb', 'models/face/weights_manifest.json']}
         ],
         modelLoaded: false,
         selModel: undefined,
