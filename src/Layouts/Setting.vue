@@ -22,6 +22,22 @@
           </v-flex>
         </v-layout>
       </v-img>
+      <v-list-group prepend-icon="style">
+        <v-list-tile slot="activator">
+          <v-list-tile-title>Style Transfer</v-list-tile-title>
+        </v-list-tile>
+        <Style
+          @showSnack="showSnack"
+        />
+      </v-list-group>
+      <v-list-group prepend-icon="brightness_7">
+        <v-list-tile slot="activator">
+          <v-list-tile-title>See in the dark</v-list-tile-title>
+        </v-list-tile>
+        <Sid
+          @showSnack="showSnack"
+        />
+      </v-list-group>
       <v-list-group prepend-icon="icon-detection">
         <v-list-tile slot="activator">
           <v-list-tile-title>Object Detection</v-list-tile-title>
@@ -38,14 +54,6 @@
           @showSnack="showSnack"
         />
       </v-list-group>
-      <v-list-group prepend-icon="brightness_7">
-        <v-list-tile slot="activator">
-          <v-list-tile-title>See in the dark</v-list-tile-title>
-        </v-list-tile>
-        <Sid
-          @showSnack="showSnack"
-        />
-      </v-list-group>
     </vue-scroll>
   </v-list>
 </template>
@@ -53,12 +61,14 @@
 <script>
   import Object from '../components/Object'
   import Face from '../components/Face'
+  import Style from '../components/Style'
   import Sid from '../components/Sid'
 
   export default {
     components: {
       Object,
       Face,
+      Style,
       Sid
     },
     data () {

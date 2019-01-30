@@ -94,7 +94,7 @@
         },
         inImg: [
           {id: 'openFaceFile1', name: 'file1', message: 'Click or Drag to Open Image 1'},
-          {id: 'openFaceFile2', name: 'file2', message: 'Click or Drag to Open Image 1'}
+          {id: 'openFaceFile2', name: 'file2', message: 'Click or Drag to Open Image 2'}
         ],
         imgsrc: [undefined, undefined],
         models: [

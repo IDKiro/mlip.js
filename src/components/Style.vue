@@ -3,34 +3,39 @@
     flat
     color="transparent"
   >
-    <v-card-text>
+    <v-card-text
+      v-for="(item, index) in inImg"
+      :key="item.id"
+    >
+      <v-subheader class="pl-0">
+        {{ message.imageName[index] }}
+      </v-subheader> 
       <label
         class="openArea"
-        for="openRawFile"
-        v-if="!thumbsrc"
-        @drop.prevent="onDrop"
+        :for="item.id"
+        v-if="!imgsrc[index]"
+        @drop.prevent="onDrop(index, $event)"
         @dragover.prevent="onDragover"
         @dragleave.prevent="dragover = false"
       >
         <v-icon>photo</v-icon>
         <div class="text">
-          {{ message.open }}
+          {{ item.message }}
         </div>
       </label>
       <input
-        id="openRawFile"
-        name="file"
-        ref="openRawFile"
+        :id="item.id"
+        :name="item.name"
+        ref="openStyleFile"
         type="file" 
-        accept=".arw, .cr2"
+        accept="image/*"
         v-show="false"
-        @change="openRawFile"
+        @change="openFile(index)"
       >
       <v-img
-        class="imgArea"
-        :aspect-ratio="3/2"
-        :src="thumbsrc"
-        v-if="thumbsrc"
+        class="imgArea" 
+        :src="imgsrc[index]"
+        v-if="imgsrc[index]"
       >
         <v-layout
           fill-height
@@ -42,7 +47,7 @@
             icon
             small
             color="blue"
-            @click="closeThumb"
+            @click="closeThumb(index)"
           >
             <v-icon>close</v-icon>
           </v-btn>
@@ -51,29 +56,12 @@
     </v-card-text>
     <v-card-text>
       <v-subheader class="pl-0">
-        {{ message.dark }}
+        {{ message.style }}
       </v-subheader> 
       <v-slider
-        v-model="darkLevel"
-        min="128"
-        max="896"
-        step="128"
-        ticks="always"
-        tick-size="2"
-        thumb-label
-      />
-    </v-card-text>
-    <v-card-text>
-      <v-subheader class="pl-0">
-        {{ message.ratio }}
-      </v-subheader> 
-      <v-slider
-        v-model="gammaRatio"
-        min="100"
-        max="500"
-        step="50"
-        ticks="always"
-        tick-size="2"
+        v-model="strength"
+        min="0"
+        max="100"
         thumb-label
       />
     </v-card-text>
@@ -98,56 +86,61 @@
 </template>
 
 <script>
-  import { openraw } from '../utils/raw'
-  import { sidProcess } from '../nets/sid'
+  import { openimage } from '../utils/image'
+  import { styleTrans } from '../nets/style'
 
   export default {
     data () {
       return {
-        darkLevel: 512,
-        gammaRatio: 300,
         message: {
-          open: 'Click or Drag to Open',
-          dark: 'Dark Level',
-          ratio: 'Gamma Ratio',
+          imageName: ['Origin image', 'Style image'],
+          style: 'Stylization strength',
           apply: 'apply',
           cancel: 'cancel'
         },
-        thumbsrc: undefined
+        inImg: [
+          {id: 'openStyleFile1', name: 'file1', message: 'Click or Drag to Open'},
+          {id: 'openStyleFile2', name: 'file2', message: 'Click or Drag to Open'}
+        ],
+        strength: 50,
+        imgsrc: [undefined, undefined]
       }
     },
 
     methods: {
-      openRawFile () {
-        let fileObj = this.$refs.openRawFile.files
+      openFile (index) {
+        let fileObj = this.$refs.openStyleFile[index].files
         let file = fileObj[0]
-        openraw(file).then((thumbUrl) => {
-          this.thumbsrc = thumbUrl
+        openimage(file).then((imgUrl) => {
+          this.imgsrc.splice(index, 1, imgUrl)
         })
       },
 
       async processImage () {
-        let rawImage = new Uint16Array()
-        if (this.thumbsrc) {
-          await sidProcess(rawImage)
+        let inImage1 = new Image()
+        let inImage2 = new Image()
+        if (this.imgsrc[0] && this.imgsrc[1]) {
+          inImage1.src = this.imgsrc[0]
+          inImage2.src = this.imgsrc[1]
+          await styleTrans(inImage1, inImage2, this.strength)
         } else {
           this.$emit('showSnack', 'Error: Image not loaded')
         }
       },
 
-      closeThumb () {
-        this.thumbsrc = undefined
-        this.$refs.openRawFile.value = ''
+      closeThumb (index) {
+        this.imgsrc.splice(index, 1, undefined)
+        this.$refs.openStyleFile[index].value = ''
       },
 
       onDragover () {
         this.dragover = true
       },
 
-      onDrop (event) {
+      onDrop (index, event) {
         this.dragover = false
-        this.$refs.openRawFile.files = event.dataTransfer.files
-      }
+        this.$refs.openStyleFile[index].files = event.dataTransfer.files
+      },
     }
   }
 </script>
@@ -174,8 +167,4 @@
     width: 300px;
   }
 
-  .text-label {
-    margin: 10px;
-    font-size: 16px;
-  }
 </style>

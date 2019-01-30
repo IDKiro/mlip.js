@@ -95,9 +95,7 @@
         },
         imgsrc: undefined,
         models: [
-          {text: 'Recommend', value: 'models/yolo/model2.json'},
-          {text: 'Model 1', value: 'models/yolo/model1.json'},
-          {text: 'Model 2', value: 'models/yolo/model.json'},
+          {text: 'Yolo v2', value: 'models/object/model2.json'}
         ],
         modelLoaded: false,
         selModel: undefined,
