@@ -68,7 +68,7 @@
       >
         <v-btn
           color="success"
-          @click="processImage"
+          @click="processImage()"
         >
           {{ message.apply }}
         </v-btn>

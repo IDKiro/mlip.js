@@ -42,7 +42,7 @@
             icon
             small
             color="blue"
-            @click="closeThumb"
+            @click="closeThumb()"
           >
             <v-icon>close</v-icon>
           </v-btn>
@@ -85,7 +85,7 @@
       >
         <v-btn
           color="success"
-          @click="processImage"
+          @click="processImage()"
         >
           {{ message.apply }}
         </v-btn>

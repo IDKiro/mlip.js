@@ -9,11 +9,22 @@
     >
       <v-subheader class="pl-0">
         {{ message.imageName[index] }}
-      </v-subheader> 
+      </v-subheader>
+      <v-btn
+        flat
+        icon
+        small
+        color="grey darken-4"
+        @click="ifOpen = !ifOpen"
+        style="position: absolute;"
+        v-if="index === 1"
+      >
+        <v-icon>swap_horiz</v-icon>
+      </v-btn>
       <label
         class="openArea"
         :for="item.id"
-        v-if="!imgsrc[index]"
+        v-if="!imgsrc[index] && (index === 0 || ifOpen)"
         @drop.prevent="onDrop(index, $event)"
         @dragover.prevent="onDragover"
         @dragleave.prevent="dragover = false"
@@ -32,6 +43,39 @@
         v-show="false"
         @change="openFile(index)"
       >
+      <v-img
+        class="imgArea"
+        :aspect-ratio="3/2"
+        :src="gallery[galleryIndex]"
+        v-if="index === 1 && !ifOpen"
+      >
+        <v-layout
+          fill-height
+          align-center
+          justify-space-between
+        >
+          <v-btn
+            flat
+            icon
+            color="blue"
+            @click="back()"
+          >
+            <v-icon large>
+              keyboard_arrow_left
+            </v-icon>
+          </v-btn>
+          <v-btn
+            flat
+            icon
+            color="blue"
+            @click="forward()"
+          >
+            <v-icon large>
+              keyboard_arrow_right
+            </v-icon>
+          </v-btn>
+        </v-layout>
+      </v-img>
       <v-img
         class="imgArea" 
         :src="imgsrc[index]"
@@ -73,13 +117,13 @@
       >
         <v-btn
           color="success"
-          @click="processImage"
+          @click="processImage()"
         >
           {{ message.apply }}
         </v-btn>
         <v-btn
           color="error"
-          @click="clearAll"
+          @click="clearAll()"
         >
           {{ message.cancel }}
         </v-btn>
@@ -105,6 +149,19 @@
           {id: 'openStyleFile1', name: 'file1', message: 'Click or Drag to Open'},
           {id: 'openStyleFile2', name: 'file2', message: 'Click or Drag to Open'}
         ],
+        ifOpen: true,
+        gallery: [
+          'images/style/bricks.jpg',
+          'images/style/clouds.jpg',
+          'images/style/red_circles.jpg',
+          'images/style/seaport.jpg',
+          'images/style/sketch.jpg',
+          'images/style/stripes.jpg',
+          'images/style/towers.jpg',
+          'images/style/udnie.jpg',
+          'images/style/zigzag.jpg',
+          ],
+        galleryIndex: 0,
         strength: 100,
         imgsrc: [undefined, undefined]
       }
@@ -141,6 +198,22 @@
       closeThumb (index) {
         this.imgsrc.splice(index, 1, undefined)
         this.$refs.openStyleFile[index].value = ''
+      },
+
+      back () {
+        if (this.galleryIndex === 0) {
+          this.galleryIndex = this.gallery.length
+        } else {
+          this.galleryIndex = this.galleryIndex - 1
+        }
+      },
+
+      forward () {
+        if (this.galleryIndex === (this.gallery.length - 1)) {
+          this.galleryIndex = 0
+        } else {
+          this.galleryIndex = this.galleryIndex + 1
+        }
       },
 
       onDragover () {
