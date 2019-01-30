@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     objImg: undefined,
-    boxes: []
+    boxes: [],
+    styleImg: undefined
   },
   mutations: {
     setObjImg (state, val) {
@@ -15,6 +16,10 @@ export default new Vuex.Store({
     
     setBoxes (state, val) {
       state.boxes = val
+    },
+
+    setStyleImg (state, val) {
+      state.styleImg = val
     }
   }
 })

@@ -1,11 +1,11 @@
 import * as tf from '@tensorflow/tfjs'
 
 const DEFAULT_INPUT_DIM = 416
-const DEFAULT_MAX_BOXES = 8
+const DEFAULT_MAX_BOXES = 32
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01
 const DEFAULT_IOU_THRESHOLD = 0.5
 const DEFAULT_CLASS_PROB_THRESHOLD = 0.5
-const class_names = [
+const CLASS_NAME = [
   'person', 'bicycle', 'car', 'motorbike', 'aeroplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
   'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
   'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
@@ -15,7 +15,7 @@ const class_names = [
   'diningtable', 'toilet', 'tvmonitor', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven',
   'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush',
 ]
-
+const NUM_CLASS = 80
 const YOLO_ANCHORS = tf.tensor2d([
   [0.57273, 0.677385], [1.87446, 2.06253], [3.33843, 5.47434],
   [7.88282, 3.52778], [9.77052, 9.16828],
@@ -115,15 +115,14 @@ async function yolo(
     maxBoxes = DEFAULT_MAX_BOXES,
     width: widthPx = DEFAULT_INPUT_DIM,
     height: heightPx = DEFAULT_INPUT_DIM,
-    numClasses = 80,
-    classNames = class_names,
+    classNames = CLASS_NAME,
   } = {},
 ) {
   const outs = tf.tidy(() => {
     const activation = model.predict(input) as tf.Tensor<tf.Rank>
 
     const [box_xy, box_wh, box_confidence, box_class_probs] =
-      yolo_head(activation, yoloAnchors, numClasses)
+      yolo_head(activation, yoloAnchors, NUM_CLASS)
 
     const all_boxes = yolo_boxes_to_corners(box_xy, box_wh)
 
@@ -155,7 +154,7 @@ async function yolo(
   tf.dispose(outs)
   indices.dispose()
 
-  const results = [] as Object[]
+  const results = [] as any[]
 
   classes_indx_arr.forEach((value: number, index: number) => {
     const classProb = keep_scores[index]
@@ -204,7 +203,31 @@ const objDet = async (image: HTMLImageElement, model: tf.Model) => {
     await ctx.drawImage(image, 0, 0)
     let imgData = await ctx.getImageData(0, 0, DEFAULT_INPUT_DIM, DEFAULT_INPUT_DIM)
     let inputTensor = await tf.fromPixels(imgData).expandDims(0).toFloat().div(tf.scalar(255))
-    return await yolo(inputTensor, model)
+    const boxesRaw = await yolo(inputTensor, model)
+
+    let boxes = [] as any[]
+    await boxesRaw.forEach(boxraw => {
+      let left = boxraw.left * ratio
+      let top = boxraw.top * ratio
+      let width = (boxraw.right - boxraw.left) * ratio
+      let height = (boxraw.bottom - boxraw.top) * ratio
+      
+      if (image.height / ratio >= boxraw.bottom &&
+        image.width / ratio >= boxraw.right) {
+        let name = boxraw.className
+        let prob = (Math.floor(boxraw.classProb * 1000) / 1000).toString()
+        const box = {
+          left, 
+          top, 
+          width, 
+          height, 
+          name, 
+          prob
+        }
+        boxes.push(box)
+      }
+    })
+    return boxes
   } else {
     return new Error('error')
   }

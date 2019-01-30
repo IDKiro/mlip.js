@@ -102,7 +102,7 @@
           {id: 'openStyleFile1', name: 'file1', message: 'Click or Drag to Open'},
           {id: 'openStyleFile2', name: 'file2', message: 'Click or Drag to Open'}
         ],
-        strength: 50,
+        strength: 100,
         imgsrc: [undefined, undefined]
       }
     },
@@ -122,7 +122,7 @@
         if (this.imgsrc[0] && this.imgsrc[1]) {
           inImage1.src = this.imgsrc[0]
           inImage2.src = this.imgsrc[1]
-          await styleTrans(inImage1, inImage2, this.strength)
+          this.$store.commit('setStyleImg', await styleTrans(inImage1, inImage2, this.strength))
         } else {
           this.$emit('showSnack', 'Error: Image not loaded')
         }

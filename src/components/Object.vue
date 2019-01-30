@@ -95,7 +95,7 @@
         },
         imgsrc: undefined,
         models: [
-          {text: 'Yolo v2', value: 'models/object/model2.json'}
+          {text: 'Yolo v2', value: 'models/object/model.json'}
         ],
         modelLoaded: false,
         selModel: undefined,

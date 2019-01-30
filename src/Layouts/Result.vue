@@ -26,17 +26,17 @@
 
       boxes () {
         return this.$store.state.boxes
+      },
+
+      styleImg () {
+        return this.$store.state.styleImg
       }
     },
 
     watch: {
       objImg: function (val) {
-        const DEFAULT_INPUT_DIM = 416
         this.$refs.canvas.height = val.height
         this.$refs.canvas.width = val.width
-        this.ratio = Math.max(
-          Math.max(val.height / DEFAULT_INPUT_DIM, val.width / DEFAULT_INPUT_DIM),
-          1)
         let ctx = this.$refs.canvas.getContext("2d")
         ctx.drawImage(val, 0, 0)
       },
@@ -47,18 +47,21 @@
         ctx.strokeStyle = "#FFFFFF"
         ctx.fillStyle = "#FFFFFF"
         val.forEach(box => {
-          const {
-            top, left, bottom, right, classProb, className,
+          let {
+            left, top, width, height, name, prob,
           } = box
-          if (this.objImg.height / this.ratio >= bottom &
-            this.objImg.width / this.ratio >= right) {
-            let prob = (Math.floor(classProb * 100) / 100).toString()
-            ctx.beginPath()
-            ctx.rect(left * this.ratio, top * this.ratio, (right-left) * this.ratio, (bottom-top) * this.ratio)
-            ctx.stroke()
-            ctx.fillText(`${className}: ${prob}`, left * this.ratio + 5, top * this.ratio + 20)
-          }
+          ctx.beginPath()
+          ctx.rect(left, top, width, height)
+          ctx.stroke()
+          ctx.fillText(`${name}: ${prob}`, left + 5, top + 20)
         })
+      },
+
+      styleImg: function (val) {
+        this.$refs.canvas.height = val.height
+        this.$refs.canvas.width = val.width
+        let ctx = this.$refs.canvas.getContext("2d")
+        ctx.putImageData(val, 0, 0)
       }
     }
   }
