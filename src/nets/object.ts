@@ -197,7 +197,8 @@ const objDet = async (image: HTMLImageElement, model: tf.Model) => {
   let ctx = canvas.getContext("2d")
   let ratio = Math.max(
     Math.max(image.height / DEFAULT_INPUT_DIM, image.width / DEFAULT_INPUT_DIM),
-    1)
+    1
+    )
   if (ctx) {
     await ctx.scale(1 / ratio, 1 / ratio)
     await ctx.drawImage(image, 0, 0)

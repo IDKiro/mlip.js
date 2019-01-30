@@ -29,32 +29,34 @@ const loadTransferModel = async () => {
 }
 
 const startStyling = async (
-  contentImg: ImageData, 
-  styleImg: ImageData, 
+  contentImg: tf.Tensor<tf.Rank>, 
+  styleImg: tf.Tensor<tf.Rank>, 
   styleNet: tf.FrozenModel, 
   transformNet: tf.FrozenModel, 
   styleRatio: number
   ) => {
   const stylized = await tf.tidy(() => {
-    let bottleneck = styleNet.predict(
-      tf.fromPixels(styleImg).toFloat().div(tf.scalar(255)).expandDims()
-      ) as tf.Tensor<tf.Rank>
+    let bottleneck = styleNet.predict(styleImg) as tf.Tensor<tf.Rank>
     if (styleRatio !== 1.0) {
-      const identityBottleneck = styleNet.predict(
-        tf.fromPixels(contentImg).toFloat().div(tf.scalar(255)).expandDims()
-        ) as tf.Tensor<tf.Rank>
+      const identityBottleneck = styleNet.predict(contentImg) as tf.Tensor<tf.Rank>
       const styleBottleneck = bottleneck
       const styleBottleneckScaled = styleBottleneck.mul(tf.scalar(styleRatio))
       const identityBottleneckScaled = identityBottleneck.mul(tf.scalar(1.0-styleRatio))
       bottleneck = styleBottleneckScaled.addStrict(identityBottleneckScaled) as tf.Tensor<tf.Rank>
     }
-    const stylizedTensor = transformNet.predict([tf.fromPixels(contentImg).toFloat().div(tf.scalar(255)).expandDims(), bottleneck]) as tf.Tensor<tf.Rank>
+    const stylizedTensor = transformNet.predict([contentImg, bottleneck]) as tf.Tensor<tf.Rank>
     return stylizedTensor.squeeze()
   })
   return stylized as tf.Tensor<tf.Rank.R2>
 }
 
-const styleTrans = async (contentImg: ImageData, styleImg: ImageData, strenth: number) => {
+const styleTrans = async (
+  image1: ImageData | HTMLImageElement | HTMLCanvasElement,
+  image2: ImageData | HTMLImageElement | HTMLCanvasElement,
+  strenth: number
+  ) => {
+  let contentImg = tf.fromPixels(image1).toFloat().div(tf.scalar(255)).expandDims()
+  let styleImg = tf.fromPixels(image2).toFloat().div(tf.scalar(255)).expandDims()
   const styleNet = await loadStyleModel()
   const transferNet = await loadTransferModel()
   const styleRatio = strenth / 100
@@ -63,7 +65,7 @@ const styleTrans = async (contentImg: ImageData, styleImg: ImageData, strenth: n
   let ctx = canvas.getContext("2d")
   await tf.toPixels (stylized, canvas)
   if (ctx) {
-    return ctx.getImageData(0, 0, contentImg.width, contentImg.height)
+    return ctx.getImageData(0, 0, image1.width, image1.height)
   } else {
     return new Error('error')
   }
