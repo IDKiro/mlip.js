@@ -32,7 +32,7 @@
       </v-list-group>
       <v-list-group prepend-icon="brightness_7">
         <v-list-tile slot="activator">
-          <v-list-tile-title>Image Brightening</v-list-tile-title>
+          <v-list-tile-title>Raw Image Brighten</v-list-tile-title>
         </v-list-tile>
         <Sid
           @showSnack="showSnack"
