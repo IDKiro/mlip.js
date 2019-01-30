@@ -190,7 +190,11 @@ async function yolo(
   return results
 }
 
-const objDet = async (image: HTMLImageElement, model: tf.Model) => {
+const objDet = async (
+  image: ImageData | HTMLImageElement | HTMLCanvasElement,
+  model: tf.Model,
+  params = {},
+  ) => {
   let canvas = document.createElement("CANVAS") as HTMLCanvasElement
   canvas.setAttribute("width", String(DEFAULT_INPUT_DIM))
   canvas.setAttribute("height", String(DEFAULT_INPUT_DIM))
@@ -201,10 +205,14 @@ const objDet = async (image: HTMLImageElement, model: tf.Model) => {
     )
   if (ctx) {
     await ctx.scale(1 / ratio, 1 / ratio)
-    await ctx.drawImage(image, 0, 0)
+    if (image instanceof ImageData) {
+      await ctx.putImageData(image, 0, 0)
+    } else {
+      await ctx.drawImage(image, 0, 0)
+    }
     let imgData = await ctx.getImageData(0, 0, DEFAULT_INPUT_DIM, DEFAULT_INPUT_DIM)
     let inputTensor = await tf.fromPixels(imgData).expandDims(0).toFloat().div(tf.scalar(255))
-    const boxesRaw = await yolo(inputTensor, model)
+    const boxesRaw = await yolo(inputTensor, model, params)
 
     let boxes = [] as any[]
     await boxesRaw.forEach(boxraw => {

@@ -35,16 +35,16 @@ const startStyling = async (
   transformNet: tf.FrozenModel, 
   styleRatio: number
   ) => {
-  const stylized = await tf.tidy(() => {
+    let stylized = await tf.tidy(() => {
     let bottleneck = styleNet.predict(styleImg) as tf.Tensor<tf.Rank>
     if (styleRatio !== 1.0) {
-      const identityBottleneck = styleNet.predict(contentImg) as tf.Tensor<tf.Rank>
-      const styleBottleneck = bottleneck
-      const styleBottleneckScaled = styleBottleneck.mul(tf.scalar(styleRatio))
-      const identityBottleneckScaled = identityBottleneck.mul(tf.scalar(1.0-styleRatio))
+      let identityBottleneck = styleNet.predict(contentImg) as tf.Tensor<tf.Rank>
+      let styleBottleneck = bottleneck
+      let styleBottleneckScaled = styleBottleneck.mul(tf.scalar(styleRatio))
+      let identityBottleneckScaled = identityBottleneck.mul(tf.scalar(1.0-styleRatio))
       bottleneck = styleBottleneckScaled.addStrict(identityBottleneckScaled) as tf.Tensor<tf.Rank>
     }
-    const stylizedTensor = transformNet.predict([contentImg, bottleneck]) as tf.Tensor<tf.Rank>
+    let stylizedTensor = transformNet.predict([contentImg, bottleneck]) as tf.Tensor<tf.Rank>
     return stylizedTensor.squeeze()
   })
   return stylized as tf.Tensor<tf.Rank.R2>
@@ -57,9 +57,9 @@ const styleTrans = async (
   ) => {
   let contentImg = tf.fromPixels(image1).toFloat().div(tf.scalar(255)).expandDims()
   let styleImg = tf.fromPixels(image2).toFloat().div(tf.scalar(255)).expandDims()
-  const styleNet = await loadStyleModel()
-  const transferNet = await loadTransferModel()
-  const styleRatio = strenth / 100
+  let styleNet = await loadStyleModel()
+  let transferNet = await loadTransferModel()
+  let styleRatio = strenth / 100
   let stylized = await startStyling(contentImg, styleImg, styleNet, transferNet, styleRatio)
   let canvas = document.createElement("CANVAS") as HTMLCanvasElement
   let ctx = canvas.getContext("2d")

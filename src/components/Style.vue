@@ -16,7 +16,7 @@
         small
         color="grey darken-4"
         @click="ifOpen = !ifOpen"
-        style="position: absolute;"
+        style="position: absolute; z-index: 100;"
         v-if="index === 1"
       >
         <v-icon>swap_horiz</v-icon>
@@ -79,7 +79,7 @@
       <v-img
         class="imgArea" 
         :src="imgsrc[index]"
-        v-if="imgsrc[index]"
+        v-if="imgsrc[index] && (index === 0 || ifOpen)"
       >
         <v-layout
           fill-height
@@ -179,9 +179,9 @@
       async processImage () {
         let inImage1 = new Image()
         let inImage2 = new Image()
-        if (this.imgsrc[0] && this.imgsrc[1]) {
+        if (this.imgsrc[0] && (!this.ifOpen || this.imgsrc[1])) {
           inImage1.src = this.imgsrc[0]
-          inImage2.src = this.imgsrc[1]
+          inImage2.src = this.ifOpen ? this.imgsrc[1] : this.gallery[this.galleryIndex]
           this.$store.commit('setStyleImg', await styleTrans(inImage1, inImage2, this.strength))
         } else {
           this.$emit('showSnack', 'Error: Image not loaded')
