@@ -134,6 +134,8 @@
       clearAll () {
         this.imgsrc = [undefined, undefined]
         this.strength = 100
+        this.$refs.openStyleFile[0].value = ''
+        this.$refs.openStyleFile[1].value = ''
       },
 
       closeThumb (index) {

@@ -134,6 +134,7 @@
         this.modelLoaded = false
         this.selModel = undefined
         this.loadedModel = undefined
+        this.$refs.openObjectFile.value = ''
       },
 
       closeThumb () {
