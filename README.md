@@ -12,7 +12,7 @@ The mlip.js is short for Machine Learning Image Process in TensorFlow.js.
 
 ### Result:
 
-TODO
+![](docs/imgs/style_result.png)
 
 ## Object Detection
 
