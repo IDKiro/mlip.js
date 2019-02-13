@@ -1,8 +1,6 @@
 import * as tf from '@tensorflow/tfjs'
 
-const MODELS = [
-  {text: 'Yolo v2', value: 'models/object/model.json'}
-]
+const MODEL = 'models/object/model.json'
 const DEFAULT_INPUT_DIM = 416
 const DEFAULT_MAX_BOXES = 32
 const DEFAULT_FILTER_BOXES_THRESHOLD = 0.01
@@ -197,7 +195,7 @@ const objDet = async (
   image: ImageData | HTMLImageElement | HTMLCanvasElement,
   params = {},
   ) => {
-  let model = await tf.loadModel(MODELS[0].value)
+  let model = await tf.loadModel(MODEL)
   let canvas = document.createElement("CANVAS") as HTMLCanvasElement
   canvas.setAttribute("width", String(DEFAULT_INPUT_DIM))
   canvas.setAttribute("height", String(DEFAULT_INPUT_DIM))
