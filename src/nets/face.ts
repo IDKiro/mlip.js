@@ -7,7 +7,7 @@ const faceRec = async (
   image2: ImageData | HTMLImageElement | HTMLCanvasElement, 
   model: tf.Model
   ) => {
-  console.log(image1, image2, model)
+    
 }
 
 export { faceRec } 

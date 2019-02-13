@@ -2376,10 +2376,6 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "http://registry.npm.taobao.org/date-now/download/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
-dcraw@^1.0.3:
-  version "1.0.3"
-  resolved "http://registry.npm.taobao.org/dcraw/download/dcraw-1.0.3.tgz#2ce21e7abfe2a81e1a70c5a3314b509c12ac4a99"
-
 de-indent@^1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/de-indent/download/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
