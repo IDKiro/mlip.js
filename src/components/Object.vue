@@ -49,15 +49,6 @@
       </v-img>
     </v-card-text>
     <v-card-text>
-      <v-select
-        :items="models"
-        v-model="selModel"
-        label="Select model"
-        @change="loadModel"
-        :append-icon="modelLoaded ? 'done' : '$vuetify.icons.dropdown'"
-      />
-    </v-card-text>
-    <v-card-text>
       <v-layout
         row
         align-center
@@ -94,12 +85,6 @@
           cancel: 'cancel'
         },
         imgsrc: undefined,
-        models: [
-          {text: 'Yolo v2', value: 'models/object/model.json'}
-        ],
-        modelLoaded: false,
-        selModel: undefined,
-        loadedModel: undefined
       }
     },
 
@@ -112,28 +97,19 @@
         })
       },
 
-      async loadModel (evt) {
-        this.modelLoaded = false
-        this.loadedModel = await tf.loadModel(evt)
-        this.modelLoaded = true
-      },
-
       async processImage () {
         let inImage = new Image()
-        if (this.imgsrc && this.loadedModel) {
+        if (this.imgsrc) {
           inImage.src = this.imgsrc
           this.$store.commit('setObjImg', inImage)
-          this.$store.commit('setBoxes', await objDet(inImage, this.loadedModel))
+          this.$store.commit('setBoxes', await objDet(inImage))
         } else {
-          this.$emit('showSnack', 'Error: Image or Model not loaded')
+          this.$emit('showSnack', 'Error: Image not loaded')
         }
       },
 
       clearAll () {
         this.imgsrc = undefined
-        this.modelLoaded = false
-        this.selModel = undefined
-        this.loadedModel = undefined
         this.$refs.openObjectFile.value = ''
       },
 

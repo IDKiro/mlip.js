@@ -38,27 +38,17 @@
           @showSnack="showSnack"
         />
       </v-list-group>
-      <v-list-group prepend-icon="face">
-        <v-list-tile slot="activator">
-          <v-list-tile-title>Face Recognition</v-list-tile-title>
-        </v-list-tile>
-        <Face
-          @showSnack="showSnack"
-        />
-      </v-list-group>
     </vue-scroll>
   </v-list>
 </template>
 
 <script>
   import Object from '../components/Object'
-  import Face from '../components/Face'
   import Style from '../components/Style'
 
   export default {
     components: {
       Object,
-      Face,
       Style
     },
     data () {

@@ -25,7 +25,3 @@ The mlip.js is short for Machine Learning Image Process in TensorFlow.js.
 ### Result:
 
 ![](docs/imgs/object_result.png)
-
-## Face Recognition
-
-TODO
